@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Manager - GameNgo Bookings</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" />
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .logo {
+      height: 40px;
+    }
+    .table-container {
+      margin-top: 50px;
+    }
+    #loginContainer {
+      max-width: 400px;
+      margin: 80px auto;
+      padding: 30px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<header class="navbar navbar-expand-lg bg-white shadow-sm p-3">
+  <div class="container">
+    <a href="#" class="navbar-brand d-flex align-items-center">
+      <img src="logo.jpg" alt="GameNgo Logo" class="logo me-2">
+      <span class="fw-bold fs-4">GameNgo <span class="text-success">Manager Panel</span></span>
+    </a>
+  </div>
+</header>
+
+<!-- Login Section -->
+<div id="loginContainer">
+  <h3 class="text-center mb-4">Manager Login</h3>
+  <form id="loginForm">
+    <div class="mb-3">
+      <label for="username" class="form-label">Username</label>
+      <input type="text" class="form-control" id="username" required />
+    </div>
+    <div class="mb-3">
+      <label for="password" class="form-label">Password</label>
+      <input type="password" class="form-control" id="password" required />
+    </div>
+    <button type="submit" class="btn btn-success w-100">Login</button>
+    <div id="loginError" class="text-danger mt-3 text-center d-none">Invalid credentials!</div>
+  </form>
+</div>
+
+<!-- Booking Table Section -->
+<div class="container table-container hidden" id="bookingSection">
+  <h3 class="mb-4">All Turf Bookings</h3>
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped" id="bookingTable">
+      <thead class="table-dark">
+        <tr>
+          <th>#</th>
+          <th>Turf Name</th>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Mobile</th>
+          <th>Date</th>
+          <th>Time</th>
+          <th>AM/PM</th>
+          <th>Hours</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Dynamic rows inserted here -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<footer class="footer bg-dark text-white text-center p-3 mt-4">
+  <p>© 2025 GameNgo. All Rights Reserved.</p>
+</footer>
+
+<script>
+  const loginForm = document.getElementById("loginForm");
+  const loginContainer = document.getElementById("loginContainer");
+  const bookingSection = document.getElementById("bookingSection");
+  const loginError = document.getElementById("loginError");
+
+  loginForm.addEventListener("submit", function(e) {
+    e.preventDefault();
+    const user = document.getElementById("username").value;
+    const pass = document.getElementById("password").value;
+
+    if (user === "admin" && pass === "1234") {
+      loginContainer.classList.add("hidden");
+      bookingSection.classList.remove("hidden");
+      loadBookings();
+    } else {
+      loginError.classList.remove("d-none");
+    }
+  });
+
+  function loadBookings() {
+    const bookingTableBody = document.querySelector("#bookingTable tbody");
+    const bookings = JSON.parse(localStorage.getItem("turfBookings") || "[]");
+
+    if (bookings.length === 0) {
+      bookingTableBody.innerHTML = `<tr><td colspan="9" class="text-center">No bookings found.</td></tr>`;
+    } else {
+      bookings.forEach((booking, index) => {
+        const row = `
+          <tr>
+            <td>${index + 1}</td>
+            <td>${booking.turfName}</td>
+            <td>${booking.username}</td>
+            <td>${booking.email}</td>
+            <td>${booking.mobile}</td>
+            <td>${booking.date}</td>
+            <td>${booking.time}</td>
+            <td>${booking.ampm}</td>
+            <td>${booking.hours}</td>
+          </tr>
+        `;
+        bookingTableBody.insertAdjacentHTML("beforeend", row);
+      });
+    }
+  }
+</script>
+
+</body>
+</html>
